@@ -17,6 +17,11 @@ const router = new VueRouter({
             path: '/analysis',
             name: 'analysis',
             component: () => import('../views/analysis.vue')
+        },
+        {
+            path: '/pdf',
+            name: 'pdf',
+            component: () => import('../views/pdf.vue')
         }
     ]
 })
