@@ -8,6 +8,7 @@
                 <div class="grid-content bg-purple">right</div>
             </el-col>
         </el-row>
+        <el-button type="primary" icon="el-icon-document" class="hidden-md-and-up fixd-bottom" circle></el-button>
     </div>
 </template>
 
@@ -54,4 +55,24 @@ export default{
     padding: 10px 0;
     background-color: #f9fafc;
   }
+.fixd-bottom{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    animation: pulse 2s infinite;
+ }
+ @keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.125);
+        opacity: 0.85;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
 </style>
