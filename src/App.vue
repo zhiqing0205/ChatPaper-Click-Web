@@ -1,16 +1,21 @@
 <template>
   <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png">
-    <el-button type="primary">Hello World</el-button>
-    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <router-view/>
+    <el-header>
+      <Header></Header>
+    </el-header>
+    <el-main>
+      <router-view/>
+    </el-main>
   </div>
 </template>
 
 <script>
-
+import Header from "@/components/Header";
 export default {
   name: 'App',
+  components: {
+    Header
+  },
 }
 </script>
 
@@ -21,6 +26,18 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
+  margin: 0 !important;
+  padding: 0 !important;
+  
+}
+.el-main{
+  background-attachment: fixed;
+  background-image: url("https://img.ziuch.top/i/2023/12/27/mf01ew-2.webp");
+  min-height: calc(100vh - 60px);
+}
+.el-header {
+  line-height: 60px;
+  padding: 0;
 }
 </style>
