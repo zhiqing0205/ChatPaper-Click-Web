@@ -22,6 +22,11 @@ const router = new VueRouter({
             path: '/pdf',
             name: 'pdf',
             component: () => import('../views/pdf.vue')
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: () => import('../views/login.vue')
         }
     ]
 })
