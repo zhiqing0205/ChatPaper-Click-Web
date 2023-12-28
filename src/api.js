@@ -8,3 +8,36 @@ export const getPapers = (params) => {
         params
     })
 }
+
+// 获取最近论文列表
+export const getRecentPapers = (params) => {
+    return Service({
+        url: '/recent_papers',
+        method: 'get',
+        params
+    })
+}
+
+// 登录
+export const login = (password) => {
+    return Service({
+        url: `/login?password=${password}`,
+        method: 'get',
+    })
+}
+
+// 分析论文
+export const analyzePaper = (file_path, client_id) => {
+    return Service({
+        url: `/analyze?file_path=${file_path}&client_id=${client_id}`,
+        method: 'get',
+    })
+}
+
+// 下载论文
+export const downloadPaper = (pdf_url) => {
+    return Service({
+        url: `/download?pdf_url=${pdf_url}`,
+        method: 'get',
+    })
+}
