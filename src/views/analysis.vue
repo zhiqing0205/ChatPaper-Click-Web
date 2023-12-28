@@ -18,6 +18,7 @@
             </el-col>
         </el-row>
         <beautiful-chat
+            v-if="have_analysis"
             :participants="participants"
             :titleImageUrl="titleImageUrl"
             :onMessageWasSent="onMessageWasSent"
@@ -69,7 +70,7 @@ export default{
           ], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
           titleImageUrl: 'https://img.ziuch.top/i/2023/12/28/j4ffw0-2.webp',
           messageList: [
-              { type: 'text', author: `GPT4`, data: { text: `我是GPT4，我已经阅读完该论文，有什么可以帮助你的吗？` } },
+              { type: 'text', author: `GPT4`, data: { text: `我是一个基于GPT4的人工智能助手，专注于机器学习和深度学习领域的研究。我已阅读完该论文，我可以帮助您总结论文、回答问题以及提供此领域的相关信息。请问有什么可以帮您的吗？` } },
           ], // the list of the messages to show, can be paginated and adjusted dynamically
           newMessagesCount: 0,
           isChatOpen: false, // to determine whether the chat window should be open or closed
@@ -107,7 +108,8 @@ export default{
     },
   methods: {
     connect() {
-      this.ws = new WebSocket(`ws://localhost:8000/ws/${this.clientId}`);
+      // this.ws = new WebSocket(`ws://localhost:8000/ws/${this.clientId}`);
+      this.ws = new WebSocket(`wss://api.chatpaper.click/ws/${this.clientId}`);
       this.ws.onmessage = (event) => {
         console.log(event.data)
         this.result += event.data
