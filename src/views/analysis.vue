@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="analysis">
         <el-row :gutter="10">
             <el-col :md="12" :lg="12" :xl="12" class="hidden-sm-and-down">
               <el-card>
@@ -17,12 +17,34 @@
                 </el-card>
             </el-col>
         </el-row>
+        <beautiful-chat
+            :participants="participants"
+            :titleImageUrl="titleImageUrl"
+            :onMessageWasSent="onMessageWasSent"
+            :messageList="messageList"
+            :newMessagesCount="newMessagesCount"
+            :isOpen="isChatOpen"
+            :close="closeChat"
+            :open="openChat"
+            :showEmoji="false"
+            :showFile="false"
+            :showEdition="false"
+            :showDeletion="false"
+            :showTypingIndicator="showTypingIndicator"
+            :showLauncher="true"
+            :showCloseButton="true"
+            :colors="colors"
+            :alwaysScrollToBottom="alwaysScrollToBottom"
+            :disableUserListToggle="false"
+            :messageStyling="messageStyling"
+            @onType="handleOnType"
+            @edit="editMessage" />
         <el-button type="primary" icon="el-icon-document" class="hidden-md-and-up fixd-bottom" circle @click="to_pdf"></el-button>
     </div>
 </template>
 
 <script>
-import { downloadPaper, analyzePaper } from '@/api';
+import { downloadPaper, analyzePaper, chat } from '@/api';
 import VueMarkdown from 'vue-markdown'
 
 export default{
@@ -34,9 +56,50 @@ export default{
             pdf_preview_url:'',
             have_analysis:false,
             ws: null,
-            clientId: '123456789', // 客户端 UUID
+            clientId: '', // 客户端 UUID
             message: 'hello world',
-            result: ''
+            result: '',
+            md5_hash: '',
+            participants: [
+            {
+              id: 'GPT4',
+              name: 'GPT4',
+              imageUrl: 'https://img.ziuch.top/i/2023/12/28/j4ffw0-2.webp'
+            },
+          ], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
+          titleImageUrl: 'https://img.ziuch.top/i/2023/12/28/j4ffw0-2.webp',
+          messageList: [
+              { type: 'text', author: `GPT4`, data: { text: `我是GPT4，我已经阅读完该论文，有什么可以帮助你的吗？` } },
+          ], // the list of the messages to show, can be paginated and adjusted dynamically
+          newMessagesCount: 0,
+          isChatOpen: false, // to determine whether the chat window should be open or closed
+          showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
+          colors: {
+            header: {
+              bg: '#4e8cff',
+              text: '#ffffff'
+            },
+            launcher: {
+              bg: '#4e8cff'
+            },
+            messageList: {
+              bg: '#ffffff'
+            },
+            sentMessage: {
+              bg: '#4e8cff',
+              text: '#ffffff'
+            },
+            receivedMessage: {
+              bg: '#eaeaea',
+              text: '#222222'
+            },
+            userInput: {
+              bg: '#f4f7f9',
+              text: '#565867'
+            }
+          }, // specifies the color scheme for the component
+          alwaysScrollToBottom: false, // when set to true always scrolls the chat to the bottom when new events are in (new message, user starts typing...)
+          messageStyling: true 
         }
     },
     mounted() {
@@ -54,7 +117,7 @@ export default{
         }
       };
     },
-    sendMessage() {
+    sendMessage_ws() {
       if (this.message !== '') {
         this.ws.send(this.message);
         this.message = 'test';
@@ -90,6 +153,51 @@ export default{
         const v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       });
+    },
+    sendMessage (text) {
+      if (text.length > 0) {
+        this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
+        this.onMessageWasSent({ author: 'me', type: 'text', data: { text } })
+        console.log('text', text)
+        
+      } else {
+        this.$message({
+          message: '请输入内容',
+          type: 'warning'
+        });
+      }
+    },
+    onMessageWasSent (message) {
+      // called when the user sends a message
+      this.messageList = [ ...this.messageList, message ]
+      // 去除掉第一条消息
+      let messageList = this.messageList.slice(1)
+        chat(messageList, this.md5_hash).then((res) => {
+          console.log('res', res)
+          // this.onMessageWasSent({ author: 'GPT4', type: 'text', data: { text: res.result } })
+          this.messageList = [...this.messageList, { author: 'GPT4', type: 'text', data: { text: res.result } }]
+        })
+    },
+    openChat () {
+      // called when the user clicks on the fab button to open the chat
+      this.isChatOpen = true
+      this.newMessagesCount = 0
+    },
+    closeChat () {
+      // called when the user clicks on the botton to close the chat
+      this.isChatOpen = false
+    },
+    handleScrollToTop () {
+      // called when the user scrolls message list to top
+      // leverage pagination for loading another page of messages
+    },
+    handleOnType () {
+      console.log('Emit typing event')
+    },
+    editMessage(message){
+      const m = this.messageList.find(m=>m.id === message.id);
+      m.isEdited = true;
+      m.data.text = message.data.text;
     }
   },
   created() {
@@ -110,6 +218,8 @@ export default{
     downloadPaper(pdf_url).then((res) => {
         this.pdf_preview_url = res.url;
         console.log(this.pdf_preview_url);
+        // md5就是文件名
+        this.md5_hash = this.pdf_preview_url.split('/')[this.pdf_preview_url.split('/').length - 1].split('.')[0];
         // 调整pdf的高度
         setTimeout(() => {
             const pdf = document.getElementById('pdf');
@@ -143,7 +253,7 @@ export default{
 .fixd-bottom{
     position:fixed;
     right:20px;
-    bottom:20px;
+    bottom:90px;
     animation: pulse 2s infinite;
  }
  @keyframes pulse {
@@ -171,5 +281,9 @@ export default{
   -webkit-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
+}
+
+.analysis {
+  text-align: left;
 }
 </style>

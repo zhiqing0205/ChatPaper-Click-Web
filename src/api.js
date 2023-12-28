@@ -41,3 +41,15 @@ export const downloadPaper = (pdf_url) => {
         method: 'get',
     })
 }
+
+// 聊天
+export const chat = (message_list, md5_hash) => {
+    return Service({
+        url: `/chat`,
+        method: 'post',
+        data: {
+            'message_list': JSON.stringify(message_list),
+            'md5_hash': md5_hash
+        }
+    })
+}
