@@ -35,6 +35,7 @@ export default {
   background-attachment: fixed;
   background-image: url("https://img.ziuch.top/i/2023/12/27/mf01ew-2.webp");
   min-height: calc(100vh - 60px);
+  padding-bottom: 0;
 }
 .el-header {
   line-height: 60px;
