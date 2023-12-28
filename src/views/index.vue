@@ -6,7 +6,6 @@
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
             style="margin-bottom: 36px; margin-top: 25px;"
-
             >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -21,7 +20,7 @@
 
         <el-divider>最近动态</el-divider>    
         <el-carousel :interval="5000" arrow="always" v-if="papers.length > 0">
-            <el-carousel-item v-for="paper in papers" :key="paper.id">
+            <el-carousel-item v-for="paper in papers" :key="paper.id" :style="backgroundImageStyle(n)">
                 <div class="mask">
                     <h2>{{ paper.title }} - {{ paper.created_at }}</h2>
                 </div>
@@ -31,7 +30,7 @@
 </template>
 
 <script>
-import { getPapers } from '@/api';
+import { getRecentPapers } from '@/api';
 export default{
     name:'',
     data(){
@@ -42,9 +41,16 @@ export default{
     },
     methods:{
         getPapers(){
-            getPapers().then(res=>{
+            getRecentPapers().then(res=>{
                 this.papers = res;
             });
+        },
+        backgroundImageStyle(n) {
+            const randomNum = Math.random(); // Generates a random number
+            const url = `https://img.ziuch.top/i/random.php?random=${randomNum}`;
+            return {
+                backgroundImage: `url(${url})`,
+            };
         }
     },
     mounted(){
@@ -67,11 +73,6 @@ export default{
         max-width: 75%;
         margin: 0 auto;
     }
-  
-  .el-carousel__item {
-    /* 加上蒙版 */
-    background-image: url(https://img.ziuch.top/i/random.php);
-  }
 
   .card {
     width: 800px;
