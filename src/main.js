@@ -6,8 +6,11 @@ import App from './App.vue'
 import router from './router'
 import 'element-ui/lib/theme-chalk/display.css';
 
+import Chat from 'vue-beautiful-chat'
+
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+Vue.use(Chat)
 
 new Vue({
   el: '#app',
