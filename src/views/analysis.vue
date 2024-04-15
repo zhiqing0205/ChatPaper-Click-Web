@@ -144,7 +144,8 @@ export default{
 
         this.$notify({
           title: '提交成功',
-          message: '正在用GPT4解析论文，请稍等~',
+          // message: '正在用GPT4解析论文，请稍等~',
+	        message: '正在用GPT3.5-Turbo解析论文，请稍等~',
           type: 'success'
         });
       })
@@ -182,8 +183,12 @@ export default{
     },
     openChat () {
       // called when the user clicks on the fab button to open the chat
-      this.isChatOpen = true
-      this.newMessagesCount = 0
+      // this.isChatOpen = true
+      // this.newMessagesCount = 0
+	    this.$message({
+				message: 'Chat功能暂时关闭，敬请期待~',
+				type: 'danger'
+			});
     },
     closeChat () {
       // called when the user clicks on the botton to close the chat
