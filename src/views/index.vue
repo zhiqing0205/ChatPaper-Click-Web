@@ -13,7 +13,7 @@
             >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传PDF文件，且不超过10M</div>
+            <div class="el-upload__tip" slot="tip">只能上传PDF文件，且不超过25M</div>
         </el-upload>
         
         <div style="margin-top: 15px;">
@@ -75,13 +75,13 @@ export default{
         },
         beforeUpload(file) {
             const isPDF = file.type === 'application/pdf';
-            const isLt10M = file.size / 1024 / 1024 < 10;
+            const isLt10M = file.size / 1024 / 1024 < 25;
 
             if (!isPDF) {
                 this.$message.error('上传文件只能是 PDF 格式!');
             }
             if (!isLt10M) {
-                this.$message.error('上传文件大小不能超过 10MB!');
+                this.$message.error('上传文件大小不能超过 25MB!');
             }
             return isPDF && isLt10M;
         },
