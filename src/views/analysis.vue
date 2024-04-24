@@ -183,12 +183,12 @@ export default{
     },
     openChat () {
       // called when the user clicks on the fab button to open the chat
-      // this.isChatOpen = true
-      // this.newMessagesCount = 0
-	    this.$message({
-				message: 'Chat功能暂时关闭，敬请期待~',
-				type: 'danger'
-			});
+      this.isChatOpen = true
+      this.newMessagesCount = 0
+	    // this.$message({
+			// 	message: 'Chat功能暂时关闭，敬请期待~',
+			// 	type: 'danger'
+			// });
     },
     closeChat () {
       // called when the user clicks on the botton to close the chat
