@@ -5,6 +5,11 @@
 npm install
 ```
 
+### Update .env.development and .env.production
+```
+VUE_APP_API_URL=http://127.0.0.1:8000
+```
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
@@ -15,10 +20,6 @@ npm run serve
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
