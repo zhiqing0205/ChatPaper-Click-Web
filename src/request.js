@@ -14,10 +14,22 @@ export const Service = axios.create({
 })
 // 添加请求拦截器
 Service.interceptors.request.use(config => {
-  loadingInstance = Loading.service({
-    lock: true,
-    text: 'loading...'
-  })
+  let no_loading_urls = ['/analyze', '/chat']
+  // 如果url以no_loading_urls中的某个字符串开头，则不显示loading
+  config.loading = true
+  for(let i = 0; i < no_loading_urls.length; i++) {
+    if (config.url.startsWith(no_loading_urls[i])) {
+      config.loading = false
+      break
+    }
+  }
+  if(config.loading !== false && !loadingInstance) {
+    loadingInstance = Loading.service({
+      lock: true,
+      text: 'loading...'
+    })
+  }
+
   // 打印请求url及参数
   console.log('url: ' + config.url)
   console.log('params: ' + JSON.stringify(config.params))
@@ -25,7 +37,9 @@ Service.interceptors.request.use(config => {
 })
 // 添加响应拦截器
 Service.interceptors.response.use(response => {
-  loadingInstance.close()
+  if(loadingInstance) {
+    loadingInstance.close()
+  }
   console.log('data: ', response.data)
   return response.data
 }, error => {
@@ -76,7 +90,9 @@ Service.interceptors.response.use(response => {
   //   default:
   //     errormsg = '连接错误'
   // }
-  Message.error(errormsg + msg)
-  loadingInstance.close()
+  // Message.error(errormsg + msg)
+  if(loadingInstance) {
+    loadingInstance.close()
+  }
   return Promise.reject(error)
 })
