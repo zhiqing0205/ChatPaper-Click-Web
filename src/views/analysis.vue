@@ -134,20 +134,35 @@ export default{
 
       // file_path是从static开始的路径
       let file_path = 'static' + this.pdf_preview_url.split('static')[1]
+	    setTimeout(() => {
+				if(!this.have_analysis) {
+			    this.$notify({
+				    title: '提交成功',
+				    message: '正在用GPT4-Turbo解析论文，请稍等~',
+				    // message: '正在用GPT3.5-Turbo解析论文，请稍等~',
+				    type: 'success'
+			    });
+				}
+			}, 1500);
       analyzePaper(file_path, this.clientId).then((res) => {
         // 如果res内含result说明该论文之前就解析好了
         if (res && res.result) {
           this.result = res.result
           this.have_analysis = true
-          return
+
+	        this.$notify({
+						title: '解析成功',
+						message: '解析成功',
+						type: 'success'
+					});
         }
 
-        this.$notify({
-          title: '提交成功',
-          // message: '正在用GPT4解析论文，请稍等~',
-	        message: '正在用GPT3.5-Turbo解析论文，请稍等~',
-          type: 'success'
-        });
+        // this.$notify({
+        //   title: '提交成功',
+        //   message: '正在用GPT4-Turbo解析论文，请稍等~',
+	      //   // message: '正在用GPT3.5-Turbo解析论文，请稍等~',
+        //   type: 'success'
+        // });
       })
     },
     getUUID() {
