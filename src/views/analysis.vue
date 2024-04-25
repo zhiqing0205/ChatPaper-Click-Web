@@ -100,7 +100,7 @@ export default{
             }
           }, // specifies the color scheme for the component
           alwaysScrollToBottom: false, // when set to true always scrolls the chat to the bottom when new events are in (new message, user starts typing...)
-          messageStyling: true 
+          messageStyling: true
         }
     },
     mounted() {
@@ -172,14 +172,15 @@ export default{
     },
     onMessageWasSent (message) {
       // called when the user sends a message
-      this.messageList = [ ...this.messageList, message ]
+      this.messageList = [ ...this.messageList, message, { author: 'GPT4', type: 'text', data: { text: '思考中...' } } ]
       // 去除掉第一条消息
       let messageList = this.messageList.slice(1)
-        chat(messageList, this.md5_hash).then((res) => {
-          console.log('res', res)
-          // this.onMessageWasSent({ author: 'GPT4', type: 'text', data: { text: res.result } })
-          this.messageList = [...this.messageList, { author: 'GPT4', type: 'text', data: { text: res.result } }]
-        })
+
+      chat(messageList, this.md5_hash).then((res) => {
+        console.log('res', res)
+        // this.onMessageWasSent({ author: 'GPT4', type: 'text', data: { text: res.result } })
+        this.messageList = [...this.messageList.slice(0, this.messageList.length - 1), { author: 'GPT4', type: 'text', data: { text: res.result } }]
+      })
     },
     openChat () {
       // called when the user clicks on the fab button to open the chat
