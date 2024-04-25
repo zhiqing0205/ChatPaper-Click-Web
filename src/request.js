@@ -46,7 +46,7 @@ Service.interceptors.response.use(response => {
   console.log('TCL: error', error)
   const msg = error.Message !== undefined ? error.Message : ''
   // 根据响应码配置msg
-  let errormsg = ''
+  let errormsg = error.message
   // 如果返回401则跳转到登录页
   if (error.response && error.response.status === 401) {
     localStorage.removeItem('token')
@@ -90,7 +90,8 @@ Service.interceptors.response.use(response => {
   //   default:
   //     errormsg = '连接错误'
   // }
-  // Message.error(errormsg + msg)
+  Message.error(errormsg + msg || '未知错误')
+
   if(loadingInstance) {
     loadingInstance.close()
   }
