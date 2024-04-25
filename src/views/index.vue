@@ -126,7 +126,7 @@ export default{
     width: 800px;
     /** 水平 竖直居中 */
     margin: 0 auto;
-    margin-top: 100px;
+    margin-top: 5vw;
     /** 宽度响应式 */
     @media screen and (max-width: 800px) {
       width: 100%;
