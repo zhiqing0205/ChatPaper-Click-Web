@@ -282,10 +282,13 @@ export default{
   }
  
 .fixd-bottom{
-    position:fixed;
-    right:20px;
-    bottom:90px;
-    animation: pulse 2s infinite;
+    position: fixed;
+    right: 25px;
+    bottom: 95px;
+	  width: 60px;
+		height: 60px;
+	  background-color: #4E8CFF !important;
+		font-size: 20px;
  }
  @keyframes pulse {
     0% {
