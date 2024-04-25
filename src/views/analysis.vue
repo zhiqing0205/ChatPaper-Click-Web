@@ -243,10 +243,18 @@ export default{
         console.log(this.pdf_preview_url);
         // md5就是文件名
         this.md5_hash = this.pdf_preview_url.split('/')[this.pdf_preview_url.split('/').length - 1].split('.')[0];
+				let that = this
+
         // 调整pdf的高度
         setTimeout(() => {
             const pdf = document.getElementById('pdf');
-            pdf.height = window.innerHeight - 150;
+						// 如果pdf元素不存在或被隐藏
+	          if (!pdf || pdf.clientHeight === 0) {
+			        // this.$message.error('pdf元素不存在');
+			        that.onEmbedLoad();
+		        } else {
+			        pdf.height = window.innerHeight - 150;
+		        }
         }, 180);
 
         this.$message({
