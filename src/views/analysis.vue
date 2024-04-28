@@ -188,8 +188,8 @@ export default{
     onMessageWasSent (message) {
       // called when the user sends a message
       this.messageList = [ ...this.messageList, message, { author: 'GPT4', type: 'text', data: { text: '思考中...' } } ]
-      // 去除掉第一条消息
-      let messageList = this.messageList.slice(1)
+      // 去除掉第一条消息和最后一条消息
+      let messageList = this.messageList.slice(1, this.messageList.length - 1)
 
       chat(messageList, this.md5_hash).then((res) => {
         console.log('res', res)
