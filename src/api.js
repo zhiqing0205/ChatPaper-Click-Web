@@ -53,3 +53,11 @@ export const chat = (message_list, md5_hash) => {
         }
     })
 }
+
+// 重新分析
+export const reanalyze = (md5_hash) => {
+    return Service({
+        url: `/re_analyze?md5_hash=${md5_hash}`,
+        method: 'get',
+    })
+}

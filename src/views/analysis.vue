@@ -13,6 +13,19 @@
                     <h2>Analysis Result</h2>
                     <vue-markdown :source="result" :breaks="true" :typographer="true" :linkify="true" style="font-size: 18px; text-align: left; padding: 25px;" id="markdown">
                     </vue-markdown>
+	                  <div style="width: 100%; text-align: center">
+		                  <el-popover
+				                  placement="top"
+				                  width="160"
+				                  v-model="visible">
+			                  <h3>当解析结果出现明显错误时可以重新解析，之前的内容将被覆盖，确定重新解析吗？</h3>
+			                  <div style="text-align: right; margin: 0">
+				                  <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+				                  <el-button type="primary" size="mini" @click="confirm_analysis">确定</el-button>
+			                  </div>
+			                  <el-button type="primary" icon="el-icon-refresh" slot="reference">重新解析</el-button>
+		                  </el-popover>
+	                  </div>
                   </div>       
                 </el-card>
             </el-col>
@@ -41,11 +54,22 @@
             @onType="handleOnType"
             @edit="editMessage" />
         <el-button type="primary" icon="el-icon-document" class="hidden-md-and-up fixd-bottom" circle @click="to_pdf"></el-button>
+		    <el-dialog title="请输入校验密码" :visible.sync="dialogFormVisible">
+			    <el-form :model="form">
+				    <el-form-item label="密码" :label-width="formLabelWidth">
+					    <el-input v-model="form.password" autocomplete="off" show-password></el-input>
+				    </el-form-item>
+			    </el-form>
+			    <div slot="footer" class="dialog-footer">
+				    <el-button @click="dialogFormVisible = false">取 消</el-button>
+				    <el-button type="primary" @click="re_analysis">确 定</el-button>
+			    </div>
+		    </el-dialog>
     </div>
 </template>
 
 <script>
-import { downloadPaper, analyzePaper, chat } from '@/api';
+import {downloadPaper, analyzePaper, chat, reanalyze} from '@/api';
 import VueMarkdown from 'vue-markdown'
 
 export default{
@@ -100,7 +124,13 @@ export default{
             }
           }, // specifies the color scheme for the component
           alwaysScrollToBottom: false, // when set to true always scrolls the chat to the bottom when new events are in (new message, user starts typing...)
-          messageStyling: true
+          messageStyling: true,
+	        visible: false,
+	        dialogFormVisible: false,
+	        form: {
+		        password: ''
+	        },
+	        formLabelWidth: '120px'
         }
     },
     mounted() {
@@ -221,7 +251,53 @@ export default{
       const m = this.messageList.find(m=>m.id === message.id);
       m.isEdited = true;
       m.data.text = message.data.text;
-    }
+    },
+	  confirm_analysis() {
+		  // this.have_analysis = false
+		  // this.result = ''
+		  // this.onEmbedLoad()
+		  this.visible = false
+			this.dialogFormVisible = true
+	  },
+	  re_analysis() {
+			// 判断密码是否是当前时间01:22->0122
+		  let now = new Date()
+		  let hour = now.getHours()
+		  let minute = now.getMinutes()
+		  if (hour < 10) {
+			  hour = '0' + hour
+		  }
+		  if (minute < 10) {
+			  minute = '0' + minute
+		  }
+		  let right_password = hour.toString() + minute.toString()
+		  if (this.form.password === right_password) {
+			  this.have_analysis = false
+			  this.result = ''
+			  this.dialogFormVisible = false
+			  reanalyze(this.md5_hash).then((res) => {
+				  this.result = res.result
+				  this.have_analysis = true
+
+				  this.$notify({
+					  title: '解析成功',
+					  message: '解析成功',
+					  type: 'success'
+				  });
+			  })
+
+			  this.$notify({
+				  title: '提交成功',
+				  message: '正在用GPT4-Turbo解析论文，请稍等~',
+				  type: 'success'
+			  });
+		  } else {
+			  this.$message({
+				  message: '密码错误',
+				  type: 'error'
+			  });
+		  }
+	  }
   },
   created() {
     this.clientId = this.getUUID();
