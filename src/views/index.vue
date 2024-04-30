@@ -6,7 +6,7 @@
             drag
             style="margin-bottom: 36px; margin-top: 25px;"
             accept=".pdf"
-            action="https://api.chatpaper.click/upload"
+            :action="uploadApi"
             :before-upload="beforeUpload"
             :on-success="uploadSuccess"
             :on-error="uploadError"
@@ -34,13 +34,15 @@
 </template>
 
 <script>
-import { getRecentPapers, uploadPaper } from '@/api';
+import { getRecentPapers } from '@/api';
+
 export default{
     name:'',
     data(){
         return{
             papers:[],
-            input2:''
+            input2:'',
+	          uploadApi: process.env.VUE_APP_BASE_URL + '/upload'
         }
     },
     methods:{
